@@ -1,14 +1,17 @@
 from django.db import models
 from django.utils.html import format_html
+from colorfield.fields import ColorField
+from django.core.validators import MinValueValidator
 
+from backend.settings import MIN_COOKING_TIME, MIN_INGREDIENT_AMOUNT
 from users.models import CustomUser
 
 
 class Tag(models.Model):
     name = models.CharField(max_length=50, verbose_name='Название тэга')
-    hex_color = models.CharField(
+    hex_color = ColorField(
         max_length=7, default="#ffffff", verbose_name='Цвет тэга')
-    slug = models.SlugField(max_length=50, verbose_name='Slug тэга')
+    slug = models.SlugField(max_length=50, unique=True, verbose_name='Slug тэга')
 
     class Meta:
         verbose_name = 'Тэг'
@@ -28,7 +31,6 @@ class Ingredient(models.Model):
 
     name = models.CharField(
         max_length=200,
-        unique=True,
         verbose_name='Название ингредиента'
     )
     measurement_unit = models.CharField(
@@ -39,6 +41,12 @@ class Ingredient(models.Model):
         ordering = ['name']
         verbose_name = 'Ингредиент'
         verbose_name_plural = 'Ингредиенты'
+        constraints = [
+            models.UniqueConstraint(
+                fields=('name', 'measurement_unit'),
+                name='unique_ingredient_name_measurement_unit'
+            ),
+        ]
 
     def __str__(self):
         return self.name
@@ -62,7 +70,16 @@ class Recipe(models.Model):
     pub_date = models.DateTimeField(
         auto_now_add=True, verbose_name='Дата публикации')
     cooking_time = models.PositiveSmallIntegerField(
-        verbose_name='Время приготовления')
+        verbose_name='Время приготовления',
+        help_text='Укажите время приготовления',
+        validators=(
+            MinValueValidator(
+                MIN_COOKING_TIME,
+                message=(f'Время приготовления не может быть '
+                         f'меньше {MIN_COOKING_TIME} минуты')
+            ),
+        )
+    )
 
     class Meta:
         ordering = ['-pub_date']
@@ -88,7 +105,14 @@ class IngredientInRecipe(models.Model):
     )
     amount = models.PositiveSmallIntegerField(
         null=True,
-        verbose_name='Количество ингредиента'
+        verbose_name='Количество ингредиента',
+        validators=(
+            MinValueValidator(
+                MIN_INGREDIENT_AMOUNT,
+                message=(f'Количество ингредиентов не может быть '
+                         f'меньше {MIN_INGREDIENT_AMOUNT}')
+            ),
+        )
     )
 
     class Meta:

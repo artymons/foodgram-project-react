@@ -1,5 +1,6 @@
 from datetime import date
 
+from django.db.models import Sum
 import django_filters.rest_framework
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
@@ -11,7 +12,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .filters import RecipeFilter
-from .models import (CustomUser, Favorite, Ingredient,
+from recipes.models import (CustomUser, Favorite, Ingredient,
                      IngredientInRecipe, Recipe, ShoppingList, Tag)
 from users.models import Follow
 from .paginators import PageNumberPaginatorModified
@@ -177,30 +178,19 @@ class DownloadShoppingCart(APIView):
 
     def get(self, request):
         user = request.user
-        shopping_cart = user.purchases.all()
-        buying_list = {}
-        for record in shopping_cart:
-            recipe = record.recipe
-            ingredients = IngredientInRecipe.objects.filter(recipe=recipe)
-            for ingredient in ingredients:
-                amount = ingredient.amount
-                name = ingredient.ingredient.name
-                measurement_unit = ingredient.ingredient.measurement_unit
-                if name not in buying_list:
-                    buying_list[name] = {
-                        'measurement_unit': measurement_unit,
-                        'amount': amount
-                    }
-                else:
-                    buying_list[name]['amount'] += amount
-
-        wishlist = []
-        for item in buying_list:
-            wishlist.append(f'{item} - {buying_list[item]["amount"]} '
-                            f'{buying_list[item]["measurement_unit"]} \n')
-        wishlist.append('\n')
+        ingredients = IngredientInRecipe.objects.filter(
+            recipe__customers__user=user).values(
+            'ingredient__name',
+            'ingredient__measurement_unit').annotate(total=Sum('amount'))
+        wishlist = '\n'.join([
+            f'{ingredient["ingredient__name"]} - {ingredient["total"]} '
+            f'{ingredient["ingredient__measurement_unit"]}'
+            for ingredient in ingredients
+        ])
         today = date.today()
-        wishlist.append(f'FoodGram, {today.year}')
-        response = HttpResponse(wishlist, 'Content-Type: text/plain')
-        response['Content-Disposition'] = 'attachment; filename="wishlist.txt"'
+        wishlist_basement = (f'\nFoodGram, {today.year}')
+        result = wishlist + wishlist_basement
+        filename = 'wishlist.txt'
+        response = HttpResponse(result, content_type='text/plain')
+        response['Content-Disposition'] = f'attachment; filename={filename}'
         return response

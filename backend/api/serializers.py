@@ -1,13 +1,13 @@
 import re
 
-from djoser.serializers import UserSerializer as BaseUserSerializer
+from djoser.serializers import UserCreateSerializer
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 from django.db import transaction
 
-from .models import (CustomUser, Favorite, Ingredient,
-                     IngredientInRecipe, Recipe, ShoppingList, Tag)
+from recipes.models import (CustomUser, Favorite, Ingredient,
+                            IngredientInRecipe, Recipe, ShoppingList, Tag)
 from users.models import Follow
 
 
@@ -27,6 +27,15 @@ class BaseUserSerializer(serializers.ModelSerializer):
         if request is None or request.user.is_anonymous:
             return False
         return Follow.objects.filter(user=request.user, author=obj).exists()
+
+
+class CustomUserCreateSerializer(UserCreateSerializer):
+
+    class Meta(UserCreateSerializer.Meta):
+        model = CustomUser
+        fields = (
+            'id', 'email', 'username', 'password', 'first_name', 'last_name'
+        )
 
 
 class TagSerializer(serializers.ModelSerializer):

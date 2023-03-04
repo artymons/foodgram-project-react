@@ -9,6 +9,7 @@ cryptography==39.0.1
 defusedxml==0.7.1
 Django==4.1.7
 django-base64field==1.0
+django-colorfield==0.8.0
 django-filter==22.1
 django-rest-framework==0.1.0
 django-templated-mail==1.1.1

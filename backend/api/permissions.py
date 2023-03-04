@@ -6,9 +6,10 @@ class AdminOrAuthorOrReadOnly(permissions.BasePermission):
     message = 'Изменение чужого контента запрещено!'
 
     def has_permission(self, request, view):
-        return bool(
+        return (
             request.method in permissions.SAFE_METHODS
             or request.user
+            or request.user.is_admin
             and request.user.is_authenticated
         )
 

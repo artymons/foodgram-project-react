@@ -33,6 +33,8 @@ INSTALLED_APPS = [
     'users',
     'api',
     'djoser',
+    'colorfield',
+    'recipes',
 ]
 
 MIDDLEWARE = [
@@ -144,7 +146,7 @@ DJOSER = {
     'LOGIN_FIELD': 'email',
 
     'SERIALIZERS': {
-        'user_create': 'users.serializers.CustomUserCreateSerializer',
+        'user_create': 'api.serializers.CustomUserCreateSerializer',
         'user': 'users.serializers.UserSerializer',
         'current_user': 'users.serializers.UserSerializer'
     },
@@ -154,3 +156,7 @@ DJOSER = {
         'user_list': ['rest_framework.permissions.AllowAny'],
     }
 }
+
+MIN_COOKING_TIME = 1
+
+MIN_INGREDIENT_AMOUNT = 1
