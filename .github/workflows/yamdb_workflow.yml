@@ -53,6 +53,9 @@ jobs:
             context: ./backend/
             push: true
             tags: artymons/foodgram-project-react:latest
+        - name: Push to Docker Hub 2
+          # Пуш образа 2 в Docker Hub
+          uses: docker/build-push-action@v2
           with:
             context: ./frontend/
             push: true
