@@ -1,12 +1,5 @@
 version: '3.3'
 services:
-
-  frontend:
-    build:
-      context: ../frontend
-      dockerfile: Dockerfile
-    volumes:
-      - ../frontend/:/app/result_build/
   db:
     image: postgres:13.0-alpine
     volumes:
@@ -35,6 +28,12 @@ services:
       - static_value:/var/html/static/
       - media_value:/var/html/media/
 
+  frontend:
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile
+    volumes:
+      - ../frontend/:/app/result_build/
 volumes:
   static_value:
   media_value:
