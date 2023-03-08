@@ -16,6 +16,12 @@ services:
       - db
     env_file:
       - ./.env
+  frontend:
+    image: artymons/frontend:latest
+    volumes:
+      - ../frontend/:/app/result_build/
+    depends_on:
+      - web
 
   nginx:
     image: nginx:1.21.3-alpine
@@ -27,11 +33,10 @@ services:
       - ../docs/:/usr/share/nginx/html/api/docs/
       - static_value:/var/html/static/
       - media_value:/var/html/media/
+    restart: always
+    depends_on:
+      - frontend
 
-  frontend:
-    image: artymons/frontend:latest
-    volumes:
-      - ../frontend/:/app/result_build/
 volumes:
   static_value:
   media_value:
