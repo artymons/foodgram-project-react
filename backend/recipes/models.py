@@ -1,17 +1,21 @@
-from django.db import models
-from django.utils.html import format_html
 from colorfield.fields import ColorField
 from django.core.validators import MinValueValidator
+from django.db import models
+from django.utils.html import format_html
+from users.models import CustomUser
 
 from backend.settings import MIN_COOKING_TIME, MIN_INGREDIENT_AMOUNT
-from users.models import CustomUser
 
 
 class Tag(models.Model):
-    name = models.CharField(max_length=50, unique=True, verbose_name='Название тэга')
+    name = models.CharField(
+        max_length=50, unique=True, verbose_name='Название тэга'
+    )
     hex_color = ColorField(
         max_length=7, default="#ffffff", verbose_name='Цвет тэга')
-    slug = models.SlugField(max_length=50, unique=True, verbose_name='Slug тэга')
+    slug = models.SlugField(
+        max_length=50, unique=True, verbose_name='Slug тэга'
+    )
 
     class Meta:
         verbose_name = 'Тэг'

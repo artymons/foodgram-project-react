@@ -1,27 +1,26 @@
 from datetime import date
 
-from django.db.models import Sum
 import django_filters.rest_framework
+from django.db.models import Sum
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
+from recipes.models import (CustomUser, Favorite, Ingredient,
+                            IngredientInRecipe, Recipe, ShoppingList, Tag)
 from rest_framework import filters, status, viewsets
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from users.models import Follow
 
 from .filters import RecipeFilter
-from recipes.models import (CustomUser, Favorite, Ingredient,
-                     IngredientInRecipe, Recipe, ShoppingList, Tag)
-from users.models import Follow
 from .paginators import PageNumberPaginatorModified
 from .permissions import AdminOrAuthorOrReadOnly
-from .serializers import (CreateRecipeSerializer,
-                          IngredientSerializer, ListRecipeSerializer,
-                          ShowFollowersSerializer, TagSerializer,
-                          FollowSerializer, FavoriteSerializer,
-                          ShoppingListSerializer)
+from .serializers import (CreateRecipeSerializer, FavoriteSerializer,
+                          FollowSerializer, IngredientSerializer,
+                          ListRecipeSerializer, ShoppingListSerializer,
+                          ShowFollowersSerializer, TagSerializer)
 
 
 class TagViewSet(viewsets.ReadOnlyModelViewSet):
