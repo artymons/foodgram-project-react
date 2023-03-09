@@ -7,7 +7,7 @@ from users.models import Follow
 
 class RecipeAdmin(admin.ModelAdmin):
     list_filter = ('author', 'name', 'tags')
-    list_display = ('name', 'author', 'followers','id')
+    list_display = ('name', 'author', 'followers', 'id')
 
     def followers(self, obj):
         return obj.favorite_recipes.all().count()
