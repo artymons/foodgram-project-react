@@ -9,7 +9,6 @@ class AdminOrAuthorOrReadOnly(permissions.BasePermission):
         return (
             request.method in permissions.SAFE_METHODS
             or request.user
-            or request.user.is_admin
             and request.user.is_authenticated
         )
 
