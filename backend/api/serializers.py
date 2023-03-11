@@ -45,8 +45,8 @@ class TagSerializer(serializers.ModelSerializer):
         model = Tag
         fields = '__all__'
 
-    def validate_hex_color(self, data):
-        color = self.initial_data.get('hex_color')
+    def validate_color(self, data):
+        color = self.initial_data.get('color')
         match = re.search(r'^#(?:[0-9a-fA-F]{3}){1,2}$', color)
         if not match:
             raise serializers.ValidationError('некорректный hex')

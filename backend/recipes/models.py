@@ -11,7 +11,7 @@ class Tag(models.Model):
     name = models.CharField(
         max_length=50, unique=True, verbose_name='Название тэга'
     )
-    hex_color = ColorField(
+    color = ColorField(
         max_length=7, default="#ffffff", verbose_name='Цвет тэга')
     slug = models.SlugField(
         max_length=50, unique=True, verbose_name='Slug тэга'
@@ -27,7 +27,7 @@ class Tag(models.Model):
     def colored_name(self):
         return format_html(
             '<span style="color: #{};">{}</span>',
-            self.hex_color,
+            self.color,
         )
 
 
