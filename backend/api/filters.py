@@ -26,4 +26,3 @@ class RecipeFilter(filters.FilterSet):
         if value:
             return queryset.filter(customers__user=user)
         return queryset
-
