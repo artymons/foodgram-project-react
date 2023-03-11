@@ -33,16 +33,26 @@ DB_PORT=5432 # порт для подключения к БД
 ```
 
 
-Выполните команды
+Выполните команды:
 
 ```bash
 docker-compose up -d --build
 docker-compose exec web python manage.py makemigrations
 docker-compose exec web python manage.py makemigrations users
 docker-compose exec web python manage.py migrate
-docker-compose exec web python manage.py createsuperuser
 docker-compose exec web python manage.py collectstatic --no-input
-docker-compose exec web python manage.py import_csv
 ```
+Выбрать один из вариантов:
 
+1.Для загрузки базы ингридиентов
+
+```bash
+docker-compose exec web python manage.py import_csv
+docker-compose exec web python manage.py createsuperuser
+```
+2.Для загрузки готовой тестовой базы с админом test - Authorization Token d90e7b0599719978e301be0918014d8ac494fd62
+
+```bash
+docker-compose exec web python manage.py loaddata db.json
+```
 перейдите http://localhost/
